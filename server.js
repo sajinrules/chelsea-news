@@ -2,6 +2,7 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
+var https = require('https');
 
 
 /**
@@ -94,6 +95,14 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
+        var options ={
+            host   : 'https://stream.twitter.com',
+            filter : '/1.1/statuses/filter.json?track=chelsea',
+            method : 'GET',
+            header :{
+                'Authorization' : "Basic" + new Buffer("test:test").toString("base64");
+            } 
+        }
 
         self.routes['/asciimo'] = function(req, res) {
             var link = "http://i.imgur.com/kmbjB.png";
@@ -101,8 +110,19 @@ var SampleApp = function() {
         };
 
         self.routes['/'] = function(req, res) {
+            https://stream.twitter.com/1.1/statuses/filter.json?track=twitter
+            https.request(options,function(response){
+                response.on('data',function(data){
+                    console.log("data:",data);
+                })
+            })
             res.setHeader('Content-Type', 'text/html');
             res.send(self.cache_get('index.html') );
+        };
+
+        self.routes['/author'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/html');
+            res.send("<html><body>Sajin M Aboobakkar</body></html>");
         };
     };
 
