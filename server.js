@@ -110,7 +110,7 @@ var SampleApp = function() {
         };
 
         self.routes['/'] = function(req, res) {
-            https://stream.twitter.com/1.1/statuses/filter.json?track=twitter
+            //https://stream.twitter.com/1.1/statuses/filter.json?track=twitter
             https.request(options,function(response){
                 response.on('data',function(data){
                     console.log("data:",data);
