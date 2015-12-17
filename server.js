@@ -45,7 +45,7 @@ app.get('/author', function(req, res) {
     res.send('<h1>Sajin M Aboobakkar</h1>');
 });
 
-server.listen('8080','127.0.0.1',function(){
+server.listen('3000','127.0.0.1',function(){
     console.log("Server running on "+server.address().address+":"+server.address().port);
 })
 /*var server= app.listen(8080,function(){
