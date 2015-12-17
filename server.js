@@ -23,7 +23,8 @@ app.get('/', function(req, res) {
         client.stream('statuses/filter', {track:'chelseafc'}, function(stream) {
             stream.on('data', function(tweet) {
                 console.log("tweet:",tweet.text);
-                socket.emit('tweet', { data: tweet});
+                var data= {text : tweet.text,source :tweet.source,user:tweet.user.name,profile_image_url:tweet.user.profile_image_url}
+                socket.emit('tweet', { data: data});
             });
 
             stream.on('error', function(error) {

@@ -28,10 +28,11 @@
 		<md-content>
 			<md-list>
 				<md-list-item class="md-3-line" ng-repeat="tweet in tweets">
-					<img ng-src="{{tweet.user.profile_image_url}}" class="face" alt="{{tweet.user.name}}">
+				
+					<img ng-src="{{tweet.profile_image_url}}" class="face" alt="{{tweet.user}}">
 					<div class="md-list-item-text">
 						<h3>{{tweet.text}}</h3>
-						<h4>{{tweet.user.name}}</h4>
+						<h4>{{tweet.user}}</h4>
 						<p>{{tweet.source}}</p>
 					</div>
 					<md-divider md-inset></md-divider>
