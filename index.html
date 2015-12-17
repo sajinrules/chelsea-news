@@ -59,8 +59,8 @@
 				.accentPalette('orange');
 		});
 		app.controller('AppCtrl', function($scope) {
-			var socket = io();
-			//console.log("here");
+			var socket = io('http://localhost');
+			console.log("here");
 			$scope.tweets=[];
 			console.log("socket:",socket);
 			socket.on('tweet',function(data){

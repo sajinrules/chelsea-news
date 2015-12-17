@@ -2,8 +2,8 @@
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
-
-
+var Twitter = require('twitter');
+var http    = require('http');
 /**
  *  Define the sample application.
  */
@@ -102,7 +102,27 @@ var SampleApp = function() {
 
         self.routes['/'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
+            var client = new Twitter({
+                consumer_key: 'p3BYDV9Zl5FJZYnY82VpFNMLc',
+                consumer_secret: 'BrywTyNy99mtbqmg9nkufQnTD9YHYBP7bhA03Q9VCAm1qzezRS',
+                access_token_key: '102956987-gcyN1NJ3rv2WoJY4oQQlVuZEBrsYzabR7E5HkWie',
+                access_token_secret: 'pUUN1M6kj9Cw4sNtlz53CE9gzSLGJFeEUe2uEDS6QKlgl'
+            });
+            io.on('connection', function(socket){
+                client.stream('statuses/filter', {track:'chelseafc'}, function(stream) {
+                    stream.on('data', function(tweet) {
+                        console.log("tweet:",tweet.text);
+                        var data= {text : tweet.text,source :tweet.source,user:tweet.user.name,profile_image_url:tweet.user.profile_image_url}
+                        socket.emit('tweet', { data: data});
+                    });
+
+                stream.on('error', function(error) {
+                    throw error;
+                });
+            });
+
+            });
+            res.sendfile(path.join(__dirname + '/index.html'));
         };
 
         self.routes['/author'] = function(req, res) {
@@ -119,11 +139,50 @@ var SampleApp = function() {
     self.initializeServer = function() {
         self.createRoutes();
         self.app = express.createServer();
-
+        self.app.use(express.static('public'));
+        var server = http.createServer(self.app);
+        var io = require('socket.io')(server);
+      //  console.log("io:",io);
+        //var io = require('socket.io')(self.app);
         //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
+        /*for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
-        }
+        }*/
+        self.routes['/asciimo'] = function(req, res) {
+            var link = "http://i.imgur.com/kmbjB.png";
+            res.send("<html><body><img src='" + link + "'></body></html>");
+        };
+
+        self.app.get('/',function(req, res) {
+            res.setHeader('Content-Type', 'text/html');
+               
+            var client = new Twitter({
+                consumer_key: 'p3BYDV9Zl5FJZYnY82VpFNMLc',
+                consumer_secret: 'BrywTyNy99mtbqmg9nkufQnTD9YHYBP7bhA03Q9VCAm1qzezRS',
+                access_token_key: '102956987-gcyN1NJ3rv2WoJY4oQQlVuZEBrsYzabR7E5HkWie',
+                access_token_secret: 'pUUN1M6kj9Cw4sNtlz53CE9gzSLGJFeEUe2uEDS6QKlgl'
+            });
+            io.on('connection', function(socket){
+                console.log("socket:",socket);
+                client.stream('statuses/filter', {track:'chelseafc'}, function(stream) {
+                    stream.on('data', function(tweet) {
+                        console.log("tweet:",tweet.text);
+                        var data= {text : tweet.text,source :tweet.source,user:tweet.user.name,profile_image_url:tweet.user.profile_image_url}
+                        socket.emit('tweet', { data: data});
+                    });
+
+                    stream.on('error', function(error) {
+                        throw error;
+                    });
+                });
+            });
+            res.send(self.cache_get('index.html') );
+        });
+
+        self.app.get('/author',function(req, res) {
+            res.setHeader('Content-Type', 'text/html');
+            res.send("<html><body>Sajin M Aboobakkar</body></html>");
+        });
     };
 
 
